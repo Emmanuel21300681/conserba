@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conserba</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #f3f4f6;
+            color: #333;
+        }
+
+        .contenido {
+            flex: 1;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #166534;
+            margin: 0.4em 0 1em;
+            text-align: center;
+        }
+
+        .carousel-section {
+           width: 100%;
+           background: linear-gradient(135deg, #d8c29a, #cbb083);
+           padding: 100px 20px 30px;
+           margin: 0 0 60px;
+           position: relative;
+           overflow: hidden; 
+        }
+
+        .main {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 220px;        
+        }
+
+        .arrow {
+            font-size: 70px;
+            cursor: pointer;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+            user-select: none;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            z-index: 10;
+        }
+
+        .arrow.left  { left: 10px; }
+        .arrow.right { right: 10px; }
+
+        .arrow:hover {
+            opacity: 0.9;
+            transform: translateY(-50%) scale(1.25);
+        }
+
+        .carousel {
+            width: 340px;
+            height: 240px;
+            perspective: 1300px;
+            position: relative;
+        }
+
+        .carousel-content {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .card {
+            position: absolute;
+            width: 340px;
+            height: 350px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        .card:nth-child(1) { transform: rotateY(  0deg) translateZ(380px); }
+        .card:nth-child(2) { transform: rotateY(120deg) translateZ(380px); }
+        .card:nth-child(3) { transform: rotateY(240deg) translateZ(380px); }
+
+        .card h2 {
+            font-size: 28px;
+            font-weight: 500;
+            margin: 0 0 20px 0;
+        }
+
+        .card p {
+            opacity: 0.85;
+            text-align: center;
+            margin: 0;
+            line-height: 1.5;
+            font-size: 17px;
+        }
+
+        .indicators {
+            margin-top: 240px;
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            z-index: 5;
+        }
+
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: white;
+            box-shadow: 0 0 12px rgba(255,255,255,0.8);
+            transform: scale(1.4);
+        }
+
+        .full-width-slider {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    height: 240px;
+    background: #f0f9f5;
+    overflow: hidden;
+    margin-top: -55px;    
+    margin-bottom: 50px;
+}
+
+        .slider-inner {
+            width: 200%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.7s ease-in-out;
+        }
+
+        .slide {
+            width: 50%;
+            height: 100%;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 40px;
+            box-sizing: border-box;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.25s ease;
+        }
+
+        .slide:hover {
+            transform: scale(1.02);
+        }
+
+        .slide:nth-child(1) {
+            background: linear-gradient(135deg, #1e5245, #2a7c68); 
+        }
+
+        .slide:nth-child(2) {
+            background: linear-gradient(135deg, #2b5e8a, #3a8ab5); 
+        }
+
+        .slide h2 {
+            margin: 0 0 16px;
+            font-size: clamp(22px, 4vw, 32px);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .slide p {
+            margin: 0;
+            text-align: center;
+            font-size: clamp(16px, 3vw, 20px);
+            max-width: 700px;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .main { gap: 80px; }
+            .carousel { width: 320px; height: 260px; }
+            .card { width: 320px; height: 260px; padding: 30px; }
+            .arrow { font-size: 50px; }
+            .indicators { margin-top: 100px; }
+            .full-width-slider {
+                height: 260px;
+            }
+            .floating-bar { position: relative; top: 0; right: 0; margin: 0 0 20px; justify-content: center; }
+            .footer-container { flex-direction: column; text-align: center; }
+            .footer-logo img { height: 100px; }
+        }
+
+        
+        .footer {
+            background: 
+                url("img/banda.png") right center / auto 150% no-repeat,
+                linear-gradient(90deg, #166534, #22c55e);
+            padding: 30px 40px;
+            position: relative;
+        }
+
+        .floating-bar {
+            position: absolute;
+            top: -90px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 24px;
+            background: linear-gradient(90deg, #14532d, #16a34a);
+            border-radius: 999px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.30);
+        }
+
+        .icon-circle {
+            width: 45px; height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: all 0.15s ease;
+        }
+
+        .icon-circle:hover { transform: scale(1.1); box-shadow: 0 5px 15px rgba(0,0,0,0.35); }
+        .icon-circle:active { transform: scale(0.9); }
+
+        .icon-circle img { max-width: 70%; max-height: 70%; object-fit: contain; }
+
+        .footer-container { display: flex; align-items: center; gap: 30px; }
+        .footer-logo img { height: 150px; }
+        .footer-divider { width: 1px; height: 160px; background: white; border-radius: 2px; }
+        .footer-info { color: white; font-size: 15px; line-height: 1.6; }
+        .footer-info strong { font-size: 18px; }
+    </style>
+</head>
+<body>
+
+<div class="contenido">
+    <h1>Conserba</h1>
+
+    <div class="carousel-section">
+        <div class="main">
+            <div class="arrow left" onclick="prev()">❮</div>
+
+            <div class="carousel">
+                <div class="carousel-content" id="carousel">
+                    <div class="card">
+                        <h2>Quiénes somos</h2>
+                        <p>Somos una organización enfocada en el desarrollo deportivo y el crecimiento de nuestra comunidad.</p>
+                    </div>
+                    <div class="card">
+                        <h2>Socia</h2>
+                        <p>Las socias tienen acceso a beneficios exclusivos y programas especiales.</p>
+                    </div>
+                    <div class="card">
+                        <h2>Socio</h2>
+                        <p>Los socios contribuyen activamente al desarrollo de la organización.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow right" onclick="next()">❯</div>
+        </div>
+
+        <div class="indicators">
+            <div class="dot active" onclick="goTo(0)"></div>
+            <div class="dot" onclick="goTo(1)"></div>
+            <div class="dot" onclick="goTo(2)"></div>
+        </div>
+    </div>
+
+    
+    <div class="full-width-slider">
+        <div class="slider-inner" id="slider">
+            <div class="slide" onclick="toggleSlide()">
+                <h2>Promoción 1</h2>
+                <p>Inscripción anticipada con 20% de descuento hasta el 15 de marzo – ¡Cupo limitado!</p>
+            </div>
+            <div class="slide" onclick="toggleSlide()">
+                <h2>Promoción 2</h2>
+                <p>Trae a un amigo y ambos reciben una sesión gratis – ¡Comparte y ahorra!</p>
+            </div>
+        </div>
+    </div>
+
+    <p style="max-width: 800px; text-align: center; line-height: 1.7; color: #444;">
+        Bienvenido a Conserba – más información y secciones próximamente.
+    </p>
+</div>
+
+<footer class="footer">
+    <div class="floating-bar">
+        <a href="mailto:monica.conserba@gmail.com"><div class="icon-circle"><img src="img/gmail.png"></div></a>
+        <a href="https://wa.me/5241703673" target="_blank"><div class="icon-circle"><img src="img/whatsapp.png"></div></a>
+        <a href="https://www.google.com/maps/search/?api=1&query=Chapultepec+15+Guadalajara+Jalisco" target="_blank"><div class="icon-circle"><img src="img/maps.png"></div></a>
+        <a href="https://instagram.com" target="_blank"><div class="icon-circle"><img src="img/instagram.png"></div></a>
+    </div>
+
+    <div class="footer-container">
+        <div class="footer-logo"><img src="img/conserba.png"></div>
+        <div class="footer-divider"></div>
+        <div class="footer-info">
+            <strong>Mtra. Mónica Reyes Garrido</strong><br>
+            monica.conserba@gmail.com<br>
+            Tel. 41703673<br>
+            Domicilio: Chapultepec no. 15, piso 11, Interior B, oficina 1<br>
+            Col. Ladrón de Guevara, Guadalajara, Jal. México.
+        </div>
+    </div>
+</footer>
+
+<script>
+
+    let angle = 0;
+    let current = 0;
+    const total = 3;
+
+    const carousel = document.getElementById("carousel");
+    const dots = document.querySelectorAll(".dot");
+
+    function updateDots() {
+        dots.forEach((dot, i) => dot.classList.toggle("active", i === current));
+    }
+
+    function rotate() {
+        carousel.style.transform = `rotateY(${angle}deg)`;
+        updateDots();
+    }
+
+    function next() {
+        angle -= 120;
+        current = (current + 1) % total;
+        rotate();
+    }
+
+    function prev() {
+        angle += 120;
+        current = (current - 1 + total) % total;
+        rotate();
+    }
+
+    function goTo(index) {
+        const diff = index - current;
+        angle -= diff * 120;
+        current = index;
+        rotate();
+    }
+
+    rotate(); 
+
+    let slideIndex = 0;
+    const slider = document.getElementById("slider");
+
+    function showSlide() {
+        slider.style.transform = `translateX(-${slideIndex * 50}%)`;
+    }
+
+    function toggleSlide() {
+        slideIndex = 1 - slideIndex;
+        showSlide();
+    }
+
+    setInterval(() => {
+        toggleSlide();
+    }, 5000);
+
+    showSlide();
+</script>
+
+</body>
+</html>
