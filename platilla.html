@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conserba</title>
+
+<style>
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    background-color: #eef4ee;
+}
+
+.top-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 35px 50px;
+    background-image: url("img/forest.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.top-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(27, 94, 32, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 1;
+}
+
+.top-bar > * {
+    position: relative;
+    z-index: 2;
+}
+
+.logo img {
+    height: 110px;
+}
+
+.menu-btn {
+    width: 32px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.menu-btn span {
+    height: 4px;
+    width: 100%;
+    background: white;
+    transition: all 0.4s ease;
+}
+
+.menu-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+.menu-bar {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    background: linear-gradient(90deg, #2e7d32, #81c784);
+    transition: max-height 0.5s ease, opacity 0.4s ease;
+}
+
+.menu-bar.show {
+    max-height: 120px;
+    opacity: 1;
+}
+
+.menu-bar ul {
+    list-style: none;
+    display: flex;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.menu-bar li {
+    flex: 1;
+    text-align: center;
+    padding: 16px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: #e8f5e9;
+    background: rgba(255, 255, 255, 0.12);
+    border-right: 1px solid rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+    user-select: none;
+}
+
+.menu-bar li:last-child {
+    border-right: none;
+}
+
+.menu-bar li:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: #1b5e20;
+}
+
+
+.spacer {
+    flex: 1;
+}
+
+
+.footer {
+    background:
+        url("img/banda.png") right center / auto 150% no-repeat,
+        linear-gradient(90deg, #166534, #22c55e);
+    padding: 30px 40px;
+    position: relative;
+}
+
+.floating-bar {
+    position: absolute;
+    top: -90px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 24px;
+    background: linear-gradient(90deg, #14532d, #16a34a);
+    border-radius: 999px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.30);
+}
+
+.icon-circle {
+    width: 45px;
+    height: 45px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: all 0.15s ease;
+}
+
+.icon-circle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.35);
+}
+
+.icon-circle:active {
+    transform: scale(0.9);
+}
+
+.icon-circle img {
+    max-width: 70%;
+    max-height: 70%;
+    object-fit: contain;
+}
+
+.footer-container {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.footer-logo img {
+    height: 150px;
+}
+
+.footer-divider {
+    width: 1px;
+    height: 160px;
+    background: white;
+    border-radius: 2px;
+}
+
+.footer-info {
+    color: white;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.footer-info strong {
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .floating-bar {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin: 0 0 20px;
+        justify-content: center;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-logo img {
+        height: 100px;
+    }
+
+    .footer-divider {
+        display: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+
+<div class="top-bar">
+    <div class="logo">
+        <img src="img/conserba.png" alt="Logo">
+    </div>
+
+    <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+<div class="menu-bar" id="menu">
+    <ul>
+        <li data-es="Nosotros" data-en="About Us">Nosotros</li>
+        <li data-es="Servicios" data-en="Services">Servicios</li>
+        <li data-es="Materias de especialización" data-en="Specialized Subjects">
+            Materias de especialización
+        </li>
+        <li data-es="Hojas" data-en="Sheets">Hojas</li>
+        <li data-es="Contacto" data-en="Contact">Contacto</li>
+        <li onclick="toggleLanguage()" data-es="Traducir" data-en="Translate">
+            Traducir
+        </li>
+    </ul>
+</div>
+
+<div class="spacer"></div>
+
+
+<footer class="footer">
+    <div class="floating-bar">
+        <a href="mailto:monica.conserba@gmail.com">
+            <div class="icon-circle"><img src="img/gmail.png"></div>
+        </a>
+        <a href="https://wa.me/5241703673" target="_blank">
+            <div class="icon-circle"><img src="img/whatsapp.png"></div>
+        </a>
+        <a href="https://www.google.com/maps/search/?api=1&query=Chapultepec+15+Guadalajara+Jalisco" target="_blank">
+            <div class="icon-circle"><img src="img/maps.png"></div>
+        </a>
+        <a href="https://instagram.com" target="_blank">
+            <div class="icon-circle"><img src="img/instagram.png"></div>
+        </a>
+    </div>
+
+    <div class="footer-container">
+        <div class="footer-logo">
+            <img src="img/conserba.png">
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="footer-info">
+            <strong>Mtra. Mónica Reyes Garrido</strong><br>
+            monica.conserba@gmail.com<br>
+            Tel. 41703673<br>
+            Domicilio: Chapultepec no. 15, piso 11, Interior B, oficina 1<br>
+            Col. Ladrón de Guevara, Guadalajara, Jal. México.
+        </div>
+    </div>
+</footer>
+
+<script>
+let isSpanish = true;
+
+function toggleMenu() {
+    document.getElementById("menu").classList.toggle("show");
+    document.getElementById("menuBtn").classList.toggle("active");
+}
+
+function toggleLanguage() {
+    const items = document.querySelectorAll(".menu-bar li");
+    isSpanish = !isSpanish;
+
+    items.forEach(item => {
+        item.textContent = isSpanish
+            ? item.getAttribute("data-es")
+            : item.getAttribute("data-en");
+    });
+}
+</script>
+
+</body>
+</html>
