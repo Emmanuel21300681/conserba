@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conserba</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    background-color: #eef4ee;
+}
+
+/* ── BARRA SUPERIOR NUEVA ── */
+.top-bar { 
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 25px 40px; 
+    background-image: url("img/forest.jpg"); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    overflow: hidden; 
+    z-index: 100; 
+}
+.top-bar::before { 
+    content: ""; 
+    position: absolute; 
+    inset: 0; 
+    background: rgba(27, 94, 32, 0.78); 
+    backdrop-filter: blur(4px); 
+    z-index: 1; 
+}
+.top-bar > * { position: relative; z-index: 2; }
+.logo img { height: 90px; }
+
+.menu-btn { 
+    width: 32px; 
+    height: 24px; 
+    cursor: pointer; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+}
+.menu-btn span { 
+    height: 4px; 
+    width: 100%; 
+    background: white; 
+    transition: all 0.4s ease; 
+}
+.menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+.menu-btn.active span:nth-child(2) { opacity: 0; }
+.menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+
+.menu-bar { 
+    overflow: hidden; 
+    max-height: 0; 
+    opacity: 0; 
+    background: linear-gradient(90deg, #2e7d32, #81c784); 
+    transition: max-height 0.5s ease, opacity 0.4s ease; 
+}
+.menu-bar.show { max-height: 120px; opacity: 1; }
+.menu-bar ul { list-style: none; display: flex; padding: 0; margin: 0; width: 100%; }
+.menu-bar li { 
+    flex: 1; 
+    text-align: center; 
+    padding: 16px 10px; 
+    font-size: 14px; 
+    font-weight: 600; 
+    letter-spacing: 0.6px; 
+    color: #e8f5e9; 
+    background: rgba(255, 255, 255, 0.12); 
+    border-right: 1px solid rgba(255, 255, 255, 0.25); 
+    cursor: pointer; 
+    transition: background 0.3s ease, color 0.3s ease; 
+    user-select: none; 
+}
+.menu-bar li:last-child { border-right: none; }
+.menu-bar li:hover { background: rgba(255, 255, 255, 0.3); color: #1b5e20; }
+
+/* Contenido principal (empuja el footer) */
+.contenido {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================= */
+/*           NUEVA SECCIÓN DE ESPECIALIDADES     */
+/* ============================================= */
+
+.specialties-section {
+    padding: 60px 40px 150px 40px;
+    background-color: #f8fafc;
+    text-align: center;
+}
+
+.specialties-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 2.8rem;
+    color: #1b5e20;
+    margin-bottom: 50px;
+}
+
+.specialties-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.specialty-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: left;
+}
+
+.specialty-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+}
+
+.specialty-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    color: #2e7d32;
+    margin-bottom: 10px;
+}
+
+.specialty-card h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 18px;
+}
+
+.specialty-card ul {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 1.05rem;
+    color: #444;
+    line-height: 1.7;
+    padding-left: 22px;
+    margin: 0;
+    list-style-type: disc;
+}
+
+.specialty-card li {
+    margin-bottom: 10px;
+}
+
+/* ============================================= */
+/*                  MODAL CONTACTO               */
+/* ============================================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+}
+.modal-content {
+    background: linear-gradient(135deg, #1e3c2f, #2e7d32);
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%; max-width: 420px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    color: white;
+    text-align: center;
+}
+.modal-header { font-size: 24px; margin-bottom: 25px; font-weight: bold; }
+.modal-close {
+    color: white; float: right; font-size: 32px; font-weight: bold;
+    cursor: pointer; line-height: 0.8;
+}
+.modal-close:hover { color: #ffeb3b; }
+.contact-links {
+    display: flex; flex-direction: column; gap: 20px; margin-top: 20px;
+}
+.contact-btn {
+    display: flex; align-items: center; justify-content: center; gap: 15px;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 50px; padding: 16px 24px;
+    color: white; font-size: 18px; font-weight: 600;
+    text-decoration: none; transition: all 0.3s ease;
+}
+.contact-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+.contact-btn img { width: 40px; height: 40px; object-fit: contain; }
+
+/* Footer */
+.footer {
+    background: url("img/banda.png") right center / auto 150% no-repeat, linear-gradient(90deg, #166534, #22c55e);
+    padding: 30px 40px;
+    position: relative;
+    margin-top: auto;
+}
+.floating-bar {
+    position: absolute; top: -90px; right: 30px;
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 24px;
+    background: linear-gradient(90deg, #14532d, #16a34a);
+    border-radius: 999px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.30);
+}
+.icon-circle {
+    width: 45px; height: 45px; background: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; transition: all 0.15s ease;
+}
+.icon-circle:hover { transform: scale(1.1); }
+.icon-circle img { max-width: 70%; max-height: 70%; object-fit: contain; }
+
+.footer-container { display: flex; align-items: center; gap: 30px; }
+.footer-logo img { height: 150px; }
+.footer-divider { width: 1px; height: 160px; background: white; border-radius: 2px; }
+.footer-info { color: white; font-size: 15px; line-height: 1.6; }
+
+@media (max-width: 1200px) {
+    .specialties-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .specialties-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .floating-bar { position: relative; top: 0; right: 0; margin-bottom: 30px; justify-content: center; }
+    .footer-container { flex-direction: column; text-align: center; }
+    .footer-divider { display: none; }
+    .specialties-section { padding: 50px 25px; }
+    .specialties-title { font-size: 2.2rem; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+    <div class="logo">
+        <img src="img/conserba.png" alt="Conserba">
+    </div>
+    <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+</div>
+
+<div class="menu-bar" id="menu">
+    <ul>
+        <li onclick="window.location.href='conserba.html'" data-es="Inicio" data-en="Home">Inicio</li>
+        <li onclick="window.location.href='servicios.html'" data-es="Servicios" data-en="Services">Servicios</li>
+        <li onclick="window.location.href='materias.html'" data-es="Materias de especialización" data-en="Specialized Subjects">Materias de especialización</li>
+        <li onclick="openContactModal()" data-es="Contacto" data-en="Contact">Contacto</li>
+        <li onclick="toggleLanguage()" data-es="Traducir" data-en="Translate">Traducir</li>
+    </ul>
+</div>
+
+<div class="contenido">
+    <!-- ================== SECCIÓN ESPECIALIDADES ================== -->
+    <section class="specialties-section">
+        <h2 class="specialties-title translatable" data-es="Nuestras Materias de Especialización y Servicio" data-en="Our Areas of Specialization and Service">Nuestras Materias de Especialización y Servicio</h2>
+
+        <div class="specialties-grid">
+
+            <div class="specialty-card">
+                <h3 class="translatable" data-es="Cumplimiento Técnico-Jurídico" data-en="Technical-Legal Compliance">Cumplimiento Técnico-Jurídico</h3>
+                <h4 class="translatable" data-es="Derecho y Gestión Legal" data-en="Law and Legal Management">Derecho y Gestión Legal</h4>
+                <ul>
+                    <li class="translatable" data-es="Derecho Ambiental." data-en="Environmental Law.">Derecho Ambiental.</li>
+                    <li class="translatable" data-es="Asesoría técnica - jurídica para la planeación y gestión de proyectos a los sectores público, privado y académico." data-en="Technical-legal advice for planning and management of projects for the public, private and academic sectors.">Asesoría técnica - jurídica para la planeación y gestión de proyectos a los sectores público, privado y académico.</li>
+                </ul>
+            </div>
+
+            <div class="specialty-card">
+                <h3 class="translatable" data-es="Evaluación y Trámites" data-en="Evaluation and Procedures">Evaluación y Trámites</h3>
+                <h4 class="translatable" data-es="Impacto y Licencias" data-en="Impact and Licenses">Impacto y Licencias</h4>
+                <ul>
+                    <li class="translatable" data-es="Impacto ambiental (obras y/o actividades)." data-en="Environmental impact (works and/or activities).">Impacto ambiental (obras y/o actividades).</li>
+                    <li class="translatable" data-es="Asesoría en el establecimiento de empresas nacionales e internacionales." data-en="Advice on the establishment of national and international companies.">Asesoría en el establecimiento de empresas nacionales e internacionales.</li>
+                    <li class="translatable" data-es="Gestión y obtención de fondos nacionales e internacionales." data-en="Management and obtaining of national and international funds.">Gestión y obtención de fondos nacionales e internacionales.</li>
+                </ul>
+            </div>
+
+            <div class="specialty-card">
+                <h3 class="translatable" data-es="Operación y Riesgo" data-en="Operation and Risk">Operación y Riesgo</h3>
+                <h4 class="translatable" data-es="Control y Auditoría Operativa" data-en="Control and Operational Audit">Control y Auditoría Operativa</h4>
+                <ul>
+                    <li class="translatable" data-es="Sistemas de gestión ambiental" data-en="Environmental management systems">Sistemas de gestión ambiental</li>
+                    <li class="translatable" data-es="Auditoría ambiental total de tercera parte" data-en="Third-party total environmental audit">Auditoría ambiental total de tercera parte</li>
+                    <li class="translatable" data-es="Residuo ambiental, de manejo especial y sólidos urbanos" data-en="Environmental residue, special handling and urban solids">Residuo ambiental, de manejo especial y sólidos urbanos</li>
+                    <li class="translatable" data-es="Control de Emisiones (fuentes fijas, móviles y de área)" data-en="Emission control (fixed, mobile and area sources)">Control de Emisiones (fuentes fijas, móviles y de área)</li>
+                    <li class="translatable" data-es="Abastecimiento, tratamiento y descarga de aguas" data-en="Water supply, treatment and discharge">Abastecimiento, tratamiento y descarga de aguas</li>
+                </ul>
+            </div>
+
+            <div class="specialty-card">
+                <h3 class="translatable" data-es="Sostenibilidad y Futuro" data-en="Sustainability and Future">Sostenibilidad y Futuro</h3>
+                <h4 class="translatable" data-es="Sostenibilidad y Cambio Climático" data-en="Sustainability and Climate Change">Sostenibilidad y Cambio Climático</h4>
+                <ul>
+                    <li class="translatable" data-es="Implementación de prácticas sustentables (energías alternativas)." data-en="Implementation of sustainable practices (alternative energies).">Implementación de prácticas sustentables (energías alternativas).</li>
+                    <li class="translatable" data-es="Manejo sustentable de recursos naturales (forestal, vida silvestre, zona federal marítimo terrestre)." data-en="Sustainable management of natural resources (forestry, wildlife, federal maritime terrestrial zone).">Manejo sustentable de recursos naturales (forestal, vida silvestre, zona federal marítimo terrestre).</li>
+                    <li class="translatable" data-es="Cambio Climático (medición de gases de efecto invernadero)." data-en="Climate Change (measurement of greenhouse gases).">Cambio Climático (medición de gases de efecto invernadero).</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+    <!-- ====================================================== -->
+</div>
+
+<!-- MODAL DE CONTACTO -->
+<div id="contactModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeContactModal()">×</span>
+        <div class="modal-header translatable" data-es="Contacto" data-en="Contact">Contacto</div>
+        <div class="contact-links">
+            <a href="mailto:monica.conserba@gmail.com" class="contact-btn"><img src="img/gmail.png" alt="Email"> Email</a>
+            <a href="https://wa.me/5241703673" target="_blank" class="contact-btn"><img src="img/whatsapp.png" alt="WhatsApp"> WhatsApp</a>
+            <a href="https://www.google.com/maps/search/?api=1&query=Chapultepec+no.+15,+piso+11,+Interior+B,+oficina+1,+Col.+Ladr%C3%B3n+de+Guevara,+Guadalajara,+Jal.+M%C3%A9xico" target="_blank" class="contact-btn"><img src="img/maps.png" alt="Maps"> Google Maps</a>
+            <a href="https://www.instagram.com/tuzzzito/" target="_blank" class="contact-btn"><img src="img/instagram.png" alt="Instagram"> Instagram</a>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="floating-bar">
+        <a href="mailto:monica.conserba@gmail.com"><div class="icon-circle"><img src="img/gmail.png"></div></a>
+        <a href="https://wa.me/5241703673" target="_blank"><div class="icon-circle"><img src="img/whatsapp.png"></div></a>
+        <a href="https://www.google.com/maps/search/?api=1&query=Chapultepec+15+Guadalajara+Jalisco" target="_blank"><div class="icon-circle"><img src="img/maps.png"></div></a>
+        <a href="https://www.instagram.com/tuzzzito/" target="_blank"><div class="icon-circle"><img src="img/instagram.png"></div></a>
+    </div>
+
+    <div class="footer-container">
+        <div class="footer-logo"><img src="img/conserba.png"></div>
+        <div class="footer-divider"></div>
+        <div class="footer-info">
+            <strong class="translatable" data-es="Mtra. Mónica Reyes Garrido" data-en="M.Sc. Mónica Reyes Garrido">Mtra. Mónica Reyes Garrido</strong><br>
+            monica.conserba@gmail.com<br>
+            <span class="translatable" data-es="Tel. 41703673" data-en="Phone: 41703673">Tel. 41703673</span><br>
+            <span class="translatable" data-es="Domicilio: Chapultepec no. 15, piso 11, Interior B, oficina 1" data-en="Address: Chapultepec no. 15, floor 11, Interior B, office 1">Domicilio: Chapultepec no. 15, piso 11, Interior B, oficina 1</span><br>
+            <span class="translatable" data-es="Col. Ladrón de Guevara, Guadalajara, Jal. México." data-en="Col. Ladrón de Guevara, Guadalajara, Jal. Mexico.">Col. Ladrón de Guevara, Guadalajara, Jal. México.</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+let isSpanish = true;
+
+function toggleMenu() {
+    document.getElementById("menu").classList.toggle("show");
+    document.getElementById("menuBtn").classList.toggle("active");
+}
+
+function openContactModal() {
+    document.getElementById("contactModal").style.display = "block";
+}
+function closeContactModal() {
+    document.getElementById("contactModal").style.display = "none";
+}
+window.onclick = function(event) {
+    const modal = document.getElementById("contactModal");
+    if (event.target === modal) modal.style.display = "none";
+}
+
+function toggleLanguage() {
+    isSpanish = !isSpanish;
+    document.querySelectorAll('[data-es]').forEach(el => {
+        el.textContent = isSpanish ? el.getAttribute("data-es") : el.getAttribute("data-en");
+    });
+}
+</script>
+
+</body>
+</html>
