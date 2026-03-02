@@ -20,32 +20,83 @@ body {
     background-color: #eef4ee;
 }
 
-.top-bar {
-    position: relative;
+.top-bar { 
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 25px 40px; 
+    background-image: url("img/forest.jpg"); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    overflow: hidden; 
+    z-index: 100; 
+    margin-bottom: 0; 
+}
+.top-bar::before { 
+    content: ""; 
+    position: absolute; 
+    inset: 0; 
+    background: rgba(27, 94, 32, 0.78); 
+    backdrop-filter: blur(4px); 
+    z-index: 1; 
+}
+.top-bar > * { position: relative; z-index: 2; }
+.logo img { height: 90px; }
+
+.menu-btn { 
+    width: 32px; 
+    height: 24px; 
+    cursor: pointer; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+}
+.menu-btn span { 
+    height: 4px; 
+    width: 100%; 
+    background: white; 
+    transition: all 0.4s ease; 
+}
+.menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+.menu-btn.active span:nth-child(2) { opacity: 0; }
+.menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+
+.menu-bar { 
+    overflow: hidden; 
+    max-height: 0; 
+    opacity: 0; 
+    background: linear-gradient(90deg, #2e7d32, #81c784); 
+    transition: max-height 0.5s ease, opacity 0.4s ease; 
+    margin-top: 0; 
+}
+.menu-bar.show { max-height: 120px; opacity: 1; }
+.menu-bar ul { list-style: none; display: flex; padding: 0; margin: 0; width: 100%; }
+.menu-bar li { 
+    flex: 1; 
+    text-align: center; 
+    padding: 16px 10px; 
+    font-size: 14px; 
+    font-weight: 600; 
+    letter-spacing: 0.6px; 
+    color: #e8f5e9; 
+    background: rgba(255, 255, 255, 0.12); 
+    border-right: 1px solid rgba(255, 255, 255, 0.25); 
+    cursor: pointer; 
+    transition: background 0.3s ease, color 0.3s ease; 
+    user-select: none; 
+}
+.menu-bar li:last-child { border-right: none; }
+.menu-bar li:hover { background: rgba(255, 255, 255, 0.3); color: #1b5e20; }
+
+.contenido {
+    flex: 1;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 35px 50px;
-    background-image: url("img/forest.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    overflow: hidden;
+    flex-direction: column;
+    margin-top: 10px;
 }
 
-.top-bar::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(27, 94, 32, 0.8);
-    backdrop-filter: blur(4px);
-    z-index: 1;
-}
-
-.top-bar > * {
-    position: relative;
-    z-index: 2;
-}
 
 .logo img {
     height: 110px;
@@ -243,6 +294,75 @@ body {
     object-fit: contain;
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+}
+.modal-content {
+    background: linear-gradient(135deg, #1e3c2f, #2e7d32);
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    color: white;
+    text-align: center;
+}
+.modal-header {
+    font-size: 24px;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+.modal-close {
+    color: white;
+    float: right;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 0.8;
+}
+.modal-close:hover { color: #ffeb3b; }
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+.contact-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 50px;
+    padding: 16px 24px;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+.contact-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+.contact-btn img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
 .footer-container {
     display: flex;
     align-items: center;
@@ -329,16 +449,11 @@ body {
 
 <div class="menu-bar" id="menu">
     <ul>
-        <li data-es="Nosotros" data-en="About Us">Nosotros</li>
-        <li data-es="Servicios" data-en="Services">Servicios</li>
-        <li data-es="Materias de especialización" data-en="Specialized Subjects">
-            Materias de especialización
-        </li>
-        <li data-es="Hojas" data-en="Sheets">Hojas</li>
-        <li data-es="Contacto" data-en="Contact">Contacto</li>
-        <li onclick="toggleLanguage()" data-es="Traducir" data-en="Translate">
-            Traducir
-        </li>
+        <li onclick="window.location.href='conserba.html'" data-es="Inicio" data-en="Home">Inicio</li>
+        <li onclick="window.location.href='servicios.html'" data-es="Servicios" data-en="Services">Servicios</li>
+        <li onclick="window.location.href='materias.html'" data-es="Materias de especialización" data-en="Specialized Subjects">Materias de especialización</li>
+        <li onclick="openContactModal()" data-es="Contacto" data-en="Contact">Contacto</li>
+        <li onclick="toggleLanguage()" data-es="Traducir" data-en="Translate">Traducir</li>
     </ul>
 </div>
 
@@ -413,6 +528,29 @@ body {
         </a>
     </div>
 
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeContactModal()">×</span>
+            <div class="modal-header" data-es="Contacto" data-en="Contact">Contacto</div>
+            
+            <div class="contact-links">
+                <a href="mailto:monica.conserba@gmail.com" class="contact-btn">
+                    <img src="img/gmail.png" alt="Email"> Email
+                </a>
+                <a href="https://wa.me/5241703673" target="_blank" class="contact-btn">
+                    <img src="img/whatsapp.png" alt="WhatsApp"> WhatsApp
+                </a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Chapultepec+no.+15,+piso+11,+Interior+B,+oficina+1,+Col.+Ladr%C3%B3n+de+Guevara,+Guadalajara,+Jal.+M%C3%A9xico" 
+                   target="_blank" class="contact-btn">
+                    <img src="img/maps.png" alt="Maps"> Google Maps
+                </a>
+                <a href="https://www.instagram.com/tuzzzito/" target="_blank" class="contact-btn">
+                    <img src="img/instagram.png" alt="Instagram"> Instagram
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="footer-container">
         <div class="footer-logo">
             <img src="img/conserba.png">
@@ -436,6 +574,21 @@ let isSpanish = true;
 function toggleMenu() {
     document.getElementById("menu").classList.toggle("show");
     document.getElementById("menuBtn").classList.toggle("active");
+}
+
+function openContactModal() {
+    document.getElementById("contactModal").style.display = "block";
+}
+
+function closeContactModal() {
+    document.getElementById("contactModal").style.display = "none";
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById("contactModal");
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
 }
 
 function toggleLanguage() {
